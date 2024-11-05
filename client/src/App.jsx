@@ -1,16 +1,9 @@
-import { Outlet, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { Outlet } from "react-router-dom";
 import Navbar from "./components/shared/Navbar";
+import useTokenValidation from "./components/hooks/UseTokenValidation";
 
 const App = () => {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/agents/login");  // Redirect to login if no token
-    }
-  }, [navigate]);
+  useTokenValidation(); // Call the hook to validate session
 
   return (
     <div className="w-full p-6">
