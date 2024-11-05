@@ -11,12 +11,12 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   try {
     const db = getDb();
-    const collection = db.collection("records");
+    const collection = db.collection("agents");
     const results = await collection.find({}).toArray();
     res.status(200).send(results);
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error retrieving records");
+    res.status(500).send("Error retrieving agents");
   }
 });
 
@@ -24,7 +24,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const db = getDb();
-    const collection = db.collection("records");
+    const collection = db.collection("agents");
     const query = { _id: new ObjectId(req.params.id) };
     const result = await collection.findOne(query);
 
@@ -35,7 +35,7 @@ router.get("/:id", async (req, res) => {
     }
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error retrieving record");
+    res.status(500).send("Error retrieving agents");
   }
 });
 
@@ -52,16 +52,16 @@ router.post("/", async (req, res) => {
       sales: req.body.sales,
     };
 
-    const collection = db.collection("records");
+    const collection = db.collection("agents");
     const result = await collection.insertOne(newDocument);
     res.status(201).send(result);
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error adding record");
+    res.status(500).send("Error adding agents");
   }
 });
 
-// Update a record by id
+// Update a agents by id
 router.patch("/:id", async (req, res) => {
   try {
     const db = getDb();
@@ -77,17 +77,17 @@ router.patch("/:id", async (req, res) => {
       },
     };
 
-    const collection = db.collection("records");
+    const collection = db.collection("agents");
     const result = await collection.updateOne(query, updates);
 
     if (result.modifiedCount === 0) {
-      res.status(404).send("Record not found");
+      res.status(404).send("Agent not found");
     } else {
       res.status(200).send(result);
     }
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error updating record");
+    res.status(500).send("Error updating agents");
   }
 });
 
@@ -96,17 +96,17 @@ router.delete("/:id", async (req, res) => {
   try {
     const db = getDb();
     const query = { _id: new ObjectId(req.params.id) };
-    const collection = db.collection("records");
+    const collection = db.collection("agents");
     const result = await collection.deleteOne(query);
 
     if (result.deletedCount === 0) {
-      res.status(404).send("Record not found");
+      res.status(404).send("Agent not found");
     } else {
-      res.status(200).send("Record deleted");
+      res.status(200).send("Agent deleted");
     }
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error deleting record");
+    res.status(500).send("Error deleting agent");
   }
 });
 

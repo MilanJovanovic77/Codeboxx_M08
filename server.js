@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
-import records from "./routes/record.js";
-import recordAgents from "./routes/recordagents.js";
+import recordAgents from "./routes/agents.js";
 import authRoutes from "./routes/auth.js";  // Import auth routes
 
 const PORT = process.env.PORT || 5050;
@@ -9,9 +8,6 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-
-// Route for "records"
-app.use("/record", records);
 
 // Route for "agents"
 app.use("/agents", recordAgents);
