@@ -1,111 +1,72 @@
-// remplacer record par agent.js
-
-
 import express from "express";
-import { getDb } from "../db/connection.js"; // Use the new getDb function
-import { ObjectId } from "mongodb";
+import Agent from "../db/schemas/agent.schemas.js";
 
 const router = express.Router();
 
-// Get a list of all the records
+// Get all agents
 router.get("/", async (req, res) => {
   try {
-    const db = getDb();
-    const collection = db.collection("agents");
-    const results = await collection.find({}).toArray();
-    res.status(200).send(results);
+    const agents = await Agent.find();
+    res.status(200).send(agents);
   } catch (err) {
-    console.error(err);
+    console.error("Error retrieving agents:", err);
     res.status(500).send("Error retrieving agents");
   }
 });
 
-// Get a single record by id
+// Get a single agent by ID
 router.get("/:id", async (req, res) => {
   try {
-    const db = getDb();
-    const collection = db.collection("agents");
-    const query = { _id: new ObjectId(req.params.id) };
-    const result = await collection.findOne(query);
-
-    if (!result) {
-      res.status(404).send("Not found");
-    } else {
-      res.status(200).send(result);
+    const agent = await Agent.findById(req.params.id);
+    if (!agent) {
+      return res.status(404).send("Agent not found");
     }
+    res.status(200).send(agent);
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Error retrieving agents");
+    console.error("Error retrieving agent:", err);
+    res.status(500).send("Error retrieving agent");
   }
 });
 
-// Create a new record
+// Create a new agent
 router.post("/", async (req, res) => {
   try {
-    const db = getDb();
-    const newDocument = {
-      name: req.body.name,
-      position: req.body.position,
-      region: req.body.region,
-      rating: req.body.rating,
-      fees: req.body.fees,
-      sales: req.body.sales,
-    };
-
-    const collection = db.collection("agents");
-    const result = await collection.insertOne(newDocument);
+    const newAgent = new Agent(req.body);
+    const result = await newAgent.save();
     res.status(201).send(result);
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Error adding agents");
+    console.error("Error creating agent:", err);
+    res.status(500).send("Error creating agent");
   }
 });
 
-// Update a agents by id
+// Update an agent by ID
 router.patch("/:id", async (req, res) => {
   try {
-    const db = getDb();
-    const query = { _id: new ObjectId(req.params.id) };
-    const updates = {
-      $set: {
-        name: req.body.name,
-        position: req.body.position,
-        region: req.body.region,
-        rating: req.body.rating,
-        fees: req.body.fees,
-        sales: req.body.sales,
-      },
-    };
-
-    const collection = db.collection("agents");
-    const result = await collection.updateOne(query, updates);
-
-    if (result.modifiedCount === 0) {
-      res.status(404).send("Agent not found");
-    } else {
-      res.status(200).send(result);
+    const updatedAgent = await Agent.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!updatedAgent) {
+      return res.status(404).send("Agent not found");
     }
+    res.status(200).send(updatedAgent);
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Error updating agents");
+    console.error("Error updating agent:", err);
+    res.status(500).send("Error updating agent");
   }
 });
 
-// Delete a record
+// Delete an agent by ID
 router.delete("/:id", async (req, res) => {
   try {
-    const db = getDb();
-    const query = { _id: new ObjectId(req.params.id) };
-    const collection = db.collection("agents");
-    const result = await collection.deleteOne(query);
-
-    if (result.deletedCount === 0) {
-      res.status(404).send("Agent not found");
-    } else {
-      res.status(200).send("Agent deleted");
+    const deletedAgent = await Agent.findByIdAndDelete(req.params.id);
+    if (!deletedAgent) {
+      return res.status(404).send("Agent not found");
     }
+    res.status(200).send("Agent deleted");
   } catch (err) {
-    console.error(err);
+    console.error("Error deleting agent:", err);
     res.status(500).send("Error deleting agent");
   }
 });
