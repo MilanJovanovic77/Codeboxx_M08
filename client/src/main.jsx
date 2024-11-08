@@ -10,14 +10,21 @@ import Unauthorized from "./components/pages/Unauthorized";
 import "./index.css";
 
 const router = createBrowserRouter([
-  { path: "/", element: <App />, children: [{ path: "/", element: <AgentList /> }] },
+  {
+    path: "/",
+    element: <App />,
+    children: [
+      { path: "/", element: <AgentList /> },
+      { path: "/agents", element: <AgentList /> },
+      { path: "/agents/create", element: <Agent /> },
+      { path: "/agents/edit/:id", element: <Agent /> },
+      { path: "/transactions", element: <Transaction /> },
+    ],
+  },
   { path: "/login", element: <Login /> },
-  { path: "/agents", element: <App />, children: [{ path: "/agents", element: <AgentList /> }] },
-  { path: "/agents/create", element: <App />, children: [{ path: "/agents/create", element: <Agent /> }] },
-  { path: "/agents/edit/:id", element: <App />, children: [{ path: "/agents/edit/:id", element: <Agent /> }] },
-  { path: "/transactions", element: <App />, children: [{ path: "/transactions", element: <Transaction /> }] },
   { path: "/unauthorized", element: <Unauthorized /> },
 ]);
+
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

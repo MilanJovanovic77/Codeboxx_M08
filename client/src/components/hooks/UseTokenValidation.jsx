@@ -1,29 +1,24 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+
+
+import config from "../../config";
 
 const useTokenValidation = () => {
-  const navigate = useNavigate();
-  const [isValid, setIsValid] = useState(false);
+  const [isValidSession, setIsValidSession] = useState(false);
 
   useEffect(() => {
-    const validateSession = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        navigate("/login");
-        return;
-      }
-      const response = await fetch(`http://localhost:5050/session/validate_token?token=${token}`);
-      const data = await response.json();
-      setIsValid(data.data.valid);
-      if (!data.data.valid) {
-        localStorage.removeItem("token");
-        navigate("/login");
-      }
-    };
-    validateSession();
-  }, [navigate]);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setIsValidSession(false);
+      return;
+    }
 
-  return isValid;
+    fetch(`${config.API_URL}/validate_token?token=${token}`)
+      .then((response) => response.json())
+      .then((data) => setIsValidSession(data.valid))
+      .catch(() => setIsValidSession(false));
+  }, []);
+
+  return isValidSession;
 };
 
 export default useTokenValidation;
