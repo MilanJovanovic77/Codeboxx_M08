@@ -9,8 +9,7 @@ const router = express.Router();
 router.post("/:user_id", async (req, res) => {
   try {
     const sessionToken = uuidv4();
-    const expirationDate = new Date();
-    expirationDate.setHours(expirationDate.getHours() + 24); // 24-hour expiration
+    const expirationDate = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24-hour expiration
 
     const session = new Session({
       session_token: sessionToken,
@@ -25,39 +24,30 @@ router.post("/:user_id", async (req, res) => {
       message: "Session created successfully",
     });
   } catch (err) {
-    console.error("Error creating session:", err);
     res.status(500).send("Error creating session");
   }
 });
 
-// Validate a session token
+// Validate session token
 router.get("/validate_token", async (req, res) => {
   try {
     const token = req.query.token;
     const session = await Session.findOne({ session_token: token }).populate("user");
 
-    if (session && new Date(session.expiration) > new Date()) {
+    if (session && session.expiration > Date.now()) {
       res.status(200).send({
         status: "ok",
-        data: {
-          valid: true,
-          user: {
-            first_name: session.user.first_name,
-            last_name: session.user.last_name,
-            id: session.user._id,
-          },
-        },
+        data: { valid: true, user: session.user },
         message: null,
       });
     } else {
       res.status(200).send({
         status: "ok",
-        data: { valid: false, user: null },
+        data: { valid: false },
         message: "Session expired or invalid",
       });
     }
   } catch (err) {
-    console.error("Error validating token:", err);
     res.status(500).send("Error validating token");
   }
 });

@@ -1,10 +1,9 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema({
-  first_name: { type: String, required: true },
-  last_name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true }, // Ensure passwords are hashed
+const transactionSchema = new mongoose.Schema({
+  date: { type: Date, default: Date.now, required: true },
+  amount: { type: Number, required: true },
+  agent_id: { type: mongoose.Schema.Types.ObjectId, ref: "Agent", required: true },
 });
 
-export default mongoose.model("User", userSchema);
+export default mongoose.model("Transaction", transactionSchema);

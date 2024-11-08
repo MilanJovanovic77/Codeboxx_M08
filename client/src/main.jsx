@@ -1,84 +1,22 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom/client";
+import React from "react";
+import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
-import Record from "./components/Record";
-import RecordList from "./components/RecordList";
-import RecordAgents from "./components/RecordAgents";
-import RecordListAgents from "./components/RecordListAgents";
-import Login from "./components/Login";
-import Transaction from "./components/Transaction";  // New component for transaction functionality
+import Login from "./components/pages/Login";
+import AgentList from "./components/pages/AgentList";
+import Agent from "./components/pages/Agent";
+import Transaction from "./components/pages/Transaction";
+import Unauthorized from "./components/pages/Unauthorized";
 import "./index.css";
 
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <App />,  // Protect this route with App
-    children: [
-      {
-        path: "/",
-        element: <RecordList />,
-      },
-      {
-        path: "/transactions",  // New transaction route
-        element: <Transaction />,
-      },
-    ],
-  },
-  {
-    path: "/edit/:id",
-    element: <App />,
-    children: [
-      {
-        path: "/edit/:id",
-        element: <Record />,
-      },
-    ],
-  },
-  {
-    path: "/create",
-    element: <App />,
-    children: [
-      {
-        path: "/create",
-        element: <Record />,
-      },
-    ],
-  },
-  {
-    path: "/agents/login",  // No protection needed here
-    element: <Login />,
-  },
-  {
-    path: "/agents",  // Protect agents-related routes
-    element: <App />,
-    children: [
-      {
-        path: "/agents",
-        element: <RecordListAgents />,
-      },
-    ],
-  },
-  {
-    path: "/agents/create",  // Protect create agent
-    element: <App />,
-    children: [
-      {
-        path: "/agents/create",
-        element: <RecordAgents />,
-      },
-    ],
-  },
-  {
-    path: "/agents/edit/:id",  // Protect edit agent
-    element: <App />,
-    children: [
-      {
-        path: "/agents/edit/:id",
-        element: <RecordAgents />,
-      },
-    ],
-  },
+  { path: "/", element: <App />, children: [{ path: "/", element: <AgentList /> }] },
+  { path: "/login", element: <Login /> },
+  { path: "/agents", element: <App />, children: [{ path: "/agents", element: <AgentList /> }] },
+  { path: "/agents/create", element: <App />, children: [{ path: "/agents/create", element: <Agent /> }] },
+  { path: "/agents/edit/:id", element: <App />, children: [{ path: "/agents/edit/:id", element: <Agent /> }] },
+  { path: "/transactions", element: <App />, children: [{ path: "/transactions", element: <Transaction /> }] },
+  { path: "/unauthorized", element: <Unauthorized /> },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

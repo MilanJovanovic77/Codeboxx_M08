@@ -1,13 +1,21 @@
-import { Outlet } from "react-router-dom";
-import Navbar from "./components/shared/Navbar";
+import { Outlet, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import NavBar from "./components/shared/NavBar";
 import useTokenValidation from "./components/hooks/UseTokenValidation";
 
 const App = () => {
-  useTokenValidation(); // Call the hook to validate session
+  const navigate = useNavigate();
+  const isValidSession = useTokenValidation();
+
+  useEffect(() => {
+    if (!isValidSession) {
+      navigate("/login");
+    }
+  }, [isValidSession, navigate]);
 
   return (
     <div className="w-full p-6">
-      <Navbar /> {/* Keep the Navbar available across pages */}
+      <NavBar />
       <Outlet />
     </div>
   );
