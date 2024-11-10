@@ -1,5 +1,5 @@
 
-
+import { useState, useEffect } from "react";
 import config from "../../config";
 
 const useTokenValidation = () => {
@@ -12,9 +12,9 @@ const useTokenValidation = () => {
       return;
     }
 
-    fetch(`${config.API_URL}/validate_token?token=${token}`)
+    fetch(`${config.API_URL}/session/validate_token?token=${token}`)
       .then((response) => response.json())
-      .then((data) => setIsValidSession(data.valid))
+      .then((data) => setIsValidSession(data.data?.valid || false))
       .catch(() => setIsValidSession(false));
   }, []);
 

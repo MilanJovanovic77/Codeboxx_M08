@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
 
-const transactionSchema = new mongoose.Schema({
-  date: { type: Date, default: Date.now, required: true },
-  amount: { type: Number, required: true },
-  agent_id: { type: mongoose.Schema.Types.ObjectId, ref: "Agent", required: true },
+const userSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  first_name: { type: String, required: true },
+  last_name: { type: String, required: true },
 });
 
-export default mongoose.model("Transaction", transactionSchema);
+export const User = mongoose.model("User", userSchema);

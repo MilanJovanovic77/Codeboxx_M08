@@ -1,6 +1,6 @@
 import express from "express";
 import Transaction from "../db/schemas/transaction.schemas.js";
-import Agent from "../db/schemas/agent.schemas.js";
+import Agent from "../db/schemas/agent.schemas.js"; // Assuming Agent model exists
 
 const router = express.Router();
 
@@ -31,6 +31,7 @@ router.post("/", async (req, res) => {
     await transaction.save();
     res.status(201).send("Transaction created successfully");
   } catch (err) {
+    console.error("Error creating transaction:", err);
     res.status(500).send("Error creating transaction");
   }
 });
